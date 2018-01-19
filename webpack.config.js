@@ -3,9 +3,10 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function resolve(dir) {
-	return path.join(__dirname, dir)
+	return path.resolve(__dirname, dir)
 }
 
 const PATHS = {
@@ -37,6 +38,10 @@ const baseWebpack = {
 					'file-loader?[name].[ext]&outputPath=images/',
 					'image-webpack-loader'
 				]
+			},
+			{
+				test: /\.json$/,
+				loader: 'json-loader'
 			}
 		]
 	},
@@ -44,12 +49,19 @@ const baseWebpack = {
 		new HtmlWebpackPlugin({
 			filename: 'index.html',
 			template: './src/index.html'
-		})
+		}),
+		new CopyWebpackPlugin([
+			{
+				from: path.resolve(__dirname, 'src/js/*.json'),
+				to: path.resolve(__dirname, 'dist/js/'),
+			}])
 	]
 };
 
 const devWebpack = {
 	devServer: {
+		contentBase: path.join(__dirname, 'dist'),
+		compress: false,
 		stats: 'errors-only',
 		port: 9000,
 		open: true
