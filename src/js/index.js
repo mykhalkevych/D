@@ -15,9 +15,16 @@ var svg = d3.select("svg"),
     g = svg.append("g").attr("transform", "translate(" + svgWidth / 2 + "," + svgHeight / 2 + ")");
 console.log(svg.style('width'))
 // Define the div for the tooltip
-var div = d3.select(".bubbles").append("div")
+var tooltip = d3.select(".bubbles").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
+
+var popup = d3.select(".bubbles").append("div")
+    .attr("class", "popup")
+    .style("opacity", 0);
+var popupOverlay = d3.select(".bubbles").append("div")
+    .attr("class", "popupOverlay")
+    .style("display", "none");
 
 var color = d3.scaleLinear()
     .domain([-1, 5])
@@ -52,36 +59,50 @@ var circle = g.selectAll("circle")
     .style("fill", function (d) { return d.children ? d.data.color ? d.data.color : color(d.depth) : null; })
     .style("fill-opacity", function (d) { return d.parent && d.children || !d.parent ? 1 : 0; })
     // .style("display", function (d) { return d.parent === root && d.children || !d.parent ? "inline" : "none"; })
-    .on("dblclick", function (d) {
+    .on("click", function (d) {
         console.log(d, focus);
         if (focus !== d) {
             d3.event.stopPropagation();
-            if(d.children)
-            zoom(d);
+            if (d.children)
+                zoom(d);
         }
     })
-    .on("click", function (d) {
-        console.log(d);
-        d3.event.stopPropagation();
-    })
     .on("mouseover", function (d) {
-        div.transition()
+        d3.event.stopPropagation();
+        console.log(d);
+        var name = d.data.name,
+            children = d.data.children.length,
+            size = d.value
+        popup.transition()
+            .duration(200)
+            .style("opacity", .9)
+            .style("z-index", 10);
+        popup.html(
+            ` 
+            <h3>Title: ${name}</h3>
+            <p>Children: ${children} </p>
+            <p>Size: ${size} </p>
+            `
+        );
+        tooltip.transition()
             .duration(200)
             .style("opacity", .9);
-        div.html(d.data.name)
+        tooltip.html(d.data.name)
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
+        d3.event.stopPropagation();
     })
+
     .on("mousemove", function (d) {
         if (d !== root) {
-            div
+            tooltip
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
         }
 
     })
     .on("mouseout", function (d) {
-        div.transition()
+        tooltip.transition()
             .duration(500)
             .style("opacity", 0);
     });
@@ -98,7 +119,7 @@ var node = g.selectAll("circle,text");
 
 svg
     .style("background", color(-1))
-    .on("dblclick", function () { zoom(root); });
+    .on("click", function () { zoom(root); });
 
 zoomTo([root.x, root.y, root.r * 2 + margin]);
 

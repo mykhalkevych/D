@@ -3,6 +3,7 @@
     "children": [
      {
       "name": "analytics",
+      "color": "#344",
       "children": [
        {
         "name": "cluster",
@@ -17,6 +18,7 @@
        },
        {
         "name": "graph",
+        "color": "#452343",
         "children": [
          {"name": "BetweennessCentrality", "size": 3534},
          {"name": "LinkDistance", "size": 5731},
@@ -27,6 +29,7 @@
        },
        {
         "name": "optimization",
+        "color": "#567344",
         "children": [
          {"name": "AspectRatioBanker", "size": 7074}
         ]
