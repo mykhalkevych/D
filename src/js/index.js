@@ -76,6 +76,7 @@ var circle = g.selectAll("circle")
         popup.transition()
             .duration(200)
             .style("opacity", .9)
+            .style("margin-left", diameter / 2 + "px")
             .style("z-index", 10);
         popup.html(
             ` 

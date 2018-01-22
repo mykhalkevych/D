@@ -53,12 +53,13 @@ div.tooltip {
 
 div.popup {
   position: fixed;  
-  top: 0;
-  left: 0; 
-  min-width: 200px;
+  top: 15px;
+  left: 50%; 
+  min-width: 150px;
   min-height: 100px;
   border-radius: 5px;
   padding: 10px;
+  transform: translateX(-50%);
   background: rgba(255,255,255, 0.9);
   opacity: 0;  
 } 
